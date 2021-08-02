@@ -3,9 +3,10 @@
 # webos-channel-tool.sh - Save custom channels from Goldstar webOS channel
 # dumps and apply these to new data after a re-tune.
 
+# TODO: Make blocked-channels list configurable.
 # TODO: Should we be setting the 'Deleted' flag on channels 790-799? This is
 #       the 'graveyard' range for services to be removed, but doesn't offer the
-#       chance for the user to recover data is this was not intended.
+#       chance for the user to recover data if this was not intended.
 # TODO: Validate whether 'isUserSelCHNo' is in any way harmful, or even used...
 
 set -u
@@ -165,7 +166,7 @@ elif [[ "${mode}" == 'save' ]]; then
 				echo >&2 "WARN: 'service_id'(${sid}) and 'programNo'(${number}) do not match for channel '${name:-}'(#${count})"
 			fi
 			if [[ -n "${seen["${tid}:${nid}:${sid}:${f}"]:-}" ]]; then
-				die "Duplicate TNSF '${tid}:${nid}:${sid}:${f}' for additional channel '${name:-}'(#${count})"
+				echo >&2 "WARN: Duplicate TNSF '${tid}:${nid}:${sid}:${f}' for additional channel '${name:-}'(#${count})"
 			else
 				seen["${tid}:${nid}:${sid}:${f}"]=1
 			fi
@@ -193,7 +194,16 @@ elif [[ "${mode}" == 'save' ]]; then
 				fi
 			elif ! (( check == channel )); then
 				if (( check > 799 )); then
-					echo >&2 "WARN: 'prNum'(${check}) and 'minorNum'(${channel}) do not match for channel '${name:-}'(#${count}), possible relocated duplicate channel? - using 'minorNum' value ${channel}"
+					if (( 0 == channel )); then
+						echo >&2 "WARN: 'prNum'(${check}) and 'minorNum'(${channel}) do not match for channel '${name:-}'(#${count}), possible relocated duplicate channel? - using 'prNum' value ${check}"
+						declare -i t=0
+						(( t = channel ))
+						(( channel = check ))
+						(( check = t ))
+						unset t
+					else
+						echo >&2 "WARN: 'prNum'(${check}) and 'minorNum'(${channel}) do not match for channel '${name:-}'(#${count}), possible relocated duplicate channel? - using 'minorNum' value ${channel}"
+					fi
 				elif (( check > 699 && check < 800 )); then
 					echo >&2 "WARN: 'prNum'(${check}) and 'minorNum'(${channel}) do not match for channel '${name:-}'(#${count}), but 'prNum' indicates a Radio service - using 'minorNum' value ${channel}"
 				else
@@ -295,6 +305,9 @@ elif [[ "${mode}" == 'apply' ]]; then
 	declare -i tid nid sid f deleted=0 channel newdeleted=0 newchannel
 
 	declare -i state=0
+
+	# Reserve channels from being re-allocated...
+	seen["3"]=1 # Old BBC Three
 
 	echo >&2 "INFO: Processing channel list ..."
 
