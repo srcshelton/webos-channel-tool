@@ -307,7 +307,8 @@ elif [[ "${mode}" == 'apply' ]]; then
 	declare -i state=0
 
 	# Reserve channels from being re-allocated...
-	seen["3"]=1 # Old BBC Three
+	# ... update: it's back!
+	#seen["3"]=1 # Old BBC Three
 
 	echo >&2 "INFO: Processing channel list ..."
 

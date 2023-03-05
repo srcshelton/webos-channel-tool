@@ -1,0 +1,4 @@
+# vim swapfile
+**/.*.sw[a-p]
+
+# vi: set syntax=cfg:
