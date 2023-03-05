@@ -189,7 +189,7 @@ elif [[ "${mode}" == 'save' ]]; then
 					(( channel = 700 + n ))
 					unset n
 
-					echo >&2 "WARN: Channel '${name:-}'(#${count}) is a radio service, but ${t} is not in channel range 700-799 - relocating to ${channel}"
+					echo >&2 "WARN: Channel '${name:-}'(#${count}) is a radio service, but ${t} is not in channel range 700-798 - relocating to ${channel}"
 					unset t
 				fi
 			elif ! (( check == channel )); then
@@ -204,7 +204,7 @@ elif [[ "${mode}" == 'save' ]]; then
 					else
 						echo >&2 "WARN: 'prNum'(${check}) and 'minorNum'(${channel}) do not match for channel '${name:-}'(#${count}), possible relocated duplicate channel? - using 'minorNum' value ${channel}"
 					fi
-				elif (( check > 699 && check < 800 )); then
+				elif (( check > 699 && check < 799 )); then
 					echo >&2 "WARN: 'prNum'(${check}) and 'minorNum'(${channel}) do not match for channel '${name:-}'(#${count}), but 'prNum' indicates a Radio service - using 'minorNum' value ${channel}"
 				else
 					echo >&2 "WARN: 'prNum'(${check}) and 'minorNum'(${channel}) do not match for channel '${name:-}'(#${count}) - using 'prNum' value ${check}"
@@ -215,7 +215,7 @@ elif [[ "${mode}" == 'save' ]]; then
 					unset t
 				fi
 			fi
-			if ! (( 2 == svc )) && (( channel > 699 && channel < 800 )) && ! (( 0 == channel )); then
+			if ! (( 2 == svc )) && (( channel > 699 && channel < 799 )) && ! (( 0 == channel )); then
 				declare -i n=0 t=0
 
 				(( t = channel ))
@@ -228,7 +228,7 @@ elif [[ "${mode}" == 'save' ]]; then
 				(( channel = 800 + n ))
 				unset n
 
-				echo >&2 "WARN: Channel '${name:-}'(#${count}) is not a radio service, but ${t} is in channel range 700-799 - relocating to ${channel}"
+				echo >&2 "WARN: Channel '${name:-}'(#${count}) is not a radio service, but ${t} is in channel range 700-798 - relocating to ${channel}"
 				unset t
 			fi
 			if (( 0 == check )) || (( 0 == channel )); then
